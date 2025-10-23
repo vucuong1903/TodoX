@@ -1,27 +1,37 @@
 import express from "express";
 import dotenv from "dotenv";
+import authRouter from "./routes/authRouter.js";
 import tasksRouters from "./routes/tasksRouters.js";
+import userRouter from "./routes/userRoutes.js";
 import connectDB from "./config/db.js";
 import cors from "cors";
 import path from "path";
-
+import cookieParser from "cookie-parser";
+import protectedRoute from "./middlewares/authMiddleware.js";
 dotenv.config(); // load .env
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 const __dirname = path.resolve();
+
 // Middleware để đọc JSON body
 app.use(express.json());
 
 // Middleware
 app.use(express.json());
+app.use(cookieParser());
 
+// CORS
+// app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 if (process.env.NODE_ENV !== "production") {
-   app.use(cors({ origin: "http://localhost:5173" }));
+   app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 }
+
 // Routes
 app.use("/tasks", tasksRouters);
-
+app.use("/auth", authRouter);
+app.use(protectedRoute);
+app.use("/users", userRouter);
 if (process.env.NODE_ENV === "production") {
    app.use(express.static(path.join(__dirname, "../frontend/dist")));
 

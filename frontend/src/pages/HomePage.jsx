@@ -5,10 +5,12 @@ import Header from "@/components/Header";
 import StatsAndFilter from "@/components/StatsAndFilter";
 import TaskList from "@/components/TaskList";
 import TaskListPagination from "@/components/TaskListPagination";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { toast } from "sonner";
 import api from "@/lib/axios";
 import { visibleTaskLimit } from "@/lib/data";
+import Logout from "@/components/auth/Logout";
+import useAuthStore from "@/stores/useAuthStore";
 
 const HomePage = () => {
    const [taskBuffer, setTaskBuffer] = useState([]);
@@ -71,13 +73,18 @@ const HomePage = () => {
    });
 
    const visibleTasks = filteredTasks.slice((page - 1) * visibleTaskLimit, page * visibleTaskLimit);
-   if(visibleTasks.length===0){
+   if (visibleTasks.length === 0) {
       hanldePrev();
    }
    const totalPages = Math.ceil(filteredTasks.length / visibleTaskLimit);
+   const user = useAuthStore((s) => s.user);
+   console.log(user.username);
 
    return (
       <div className="min-h-screen w-full bg-[#f8fafc] relative">
+         <div>
+            <Logout />
+         </div>
          {/* Circuit Board Background */}
          <div
             className="absolute inset-0 z-0"
