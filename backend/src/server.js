@@ -28,10 +28,9 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 // Routes
-app.use("/tasks", tasksRouters);
-app.use("/auth", authRouter);
-app.use(protectedRoute);
-app.use("/users", userRouter);
+app.use("/auth", authRouter); // Auth routes không cần middleware
+app.use("/tasks", protectedRoute, tasksRouters); // Tasks routes cần authentication
+app.use("/users", protectedRoute, userRouter); // Users routes cần authentication
 if (process.env.NODE_ENV === "production") {
    app.use(express.static(path.join(__dirname, "../frontend/dist")));
 

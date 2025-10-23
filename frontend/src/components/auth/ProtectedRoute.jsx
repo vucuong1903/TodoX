@@ -17,8 +17,14 @@ const ProtectedRoute = () => {
             console.log('Refresh failed in ProtectedRoute:', error);
          }
       }
+      // Only fetch user data if we have a valid access token
       if (accessToken && !user) {
-         await fetchMe()
+         try {
+            await fetchMe()
+         } catch (error) {
+            // If fetchMe fails, clear the invalid token
+            console.log('FetchMe failed in ProtectedRoute:', error);
+         }
       }
       setstarting(false)
    }
