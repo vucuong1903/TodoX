@@ -22,9 +22,22 @@ app.use(express.json());
 app.use(cookieParser());
 
 // CORS
-// app.use(cors({ origin: "http://localhost:5173", credentials: true }));
-if (process.env.NODE_ENV !== "production") {
-   app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+if (process.env.NODE_ENV === "production") {
+   // Production: Allow requests from the same origin (since frontend is served from backend)
+   app.use(
+      cors({
+         origin: true, // Allow same origin
+         credentials: true,
+      })
+   );
+} else {
+   // Development: Allow requests from Vite dev server
+   app.use(
+      cors({
+         origin: "http://localhost:5173",
+         credentials: true,
+      })
+   );
 }
 
 // Routes
